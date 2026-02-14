@@ -1,0 +1,22 @@
+// flex layout mixin
+@mixin flex-layout(
+    $direction: row,
+    $main-align: center,
+    $cross-align: center,
+) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $main-align;
+    align-items: $cross-align;
+}
+// grid layout mixin
+@mixin grid-layout(
+    $rows: 2,
+    $columns: 2,
+    $gap: 0,
+) {
+    display: grid;
+    grid-template-rows: $rows;
+    grid-template-columns: $columns;
+    gap: $gap;
+}
