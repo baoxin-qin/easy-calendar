@@ -2,13 +2,11 @@
 import { Icons } from '../assets/Icons';
 import { NButton, NIcon, NSwitch } from 'naive-ui';
 import { ref, useTemplateRef, watch } from 'vue';
+import { useGlobalStore } from '../stores/global';
 
-const showView = ref<'year'|'month'|'week'|'day'>('month');
+const global = useGlobalStore();
 const inputValue = ref<string>('');
 const searchBoxRef = useTemplateRef<HTMLDivElement>('searchBoxRef');
-const toggleView = (view: 'year'|'month'|'week'|'day') => {
-    showView.value = view;
-}
 watch(inputValue, (value) => {
     const timer = setTimeout(() => {
         if (searchBoxRef.value) {
@@ -32,10 +30,10 @@ watch(inputValue, (value) => {
             New Event
         </n-button>
         <div class="view-switcher">
-            <button class="btn" :class="{active: showView === 'year'}" @click="toggleView('year')">Year</button>
-            <button class="btn" :class="{active: showView ==='month'}" @click="toggleView('month')">Month</button>
-            <button class="btn" :class="{active: showView === 'week'}" @click="toggleView('week')">Week</button>
-            <button class="btn" :class="{active: showView === 'day'}" @click="toggleView('day')">Day</button>
+            <button class="btn" :class="{active: global.view === 'year'}" @click="global.setView('year')">Year</button>
+            <button class="btn" :class="{active: global.view ==='month'}" @click="global.setView('month')">Month</button>
+            <button class="btn" :class="{active: global.view === 'week'}" @click="global.setView('week')">Week</button>
+            <button class="btn" :class="{active: global.view === 'day'}" @click="global.setView('day')">Day</button>
         </div>
         <div class="search-bar">
             <Icons.Search theme="outline" fill="#333" size="20" />

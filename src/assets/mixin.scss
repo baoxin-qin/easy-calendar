@@ -11,8 +11,8 @@
 }
 // grid layout mixin
 @mixin grid-layout(
-    $rows: 2,
-    $columns: 2,
+    $rows: 1fr,
+    $columns: 1fr,
     $gap: 0,
 ) {
     display: grid;

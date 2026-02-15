@@ -19,6 +19,7 @@ import { MenuBar, MiniTable, Extension, Views } from './components';
 	@include grid-layout($rows: 1fr 14fr, $columns: 1fr);
 	width: 100%;
 	height: 100%;
+	overflow: hidden;
 	background-color: #f5f5f5;
 }
 .calendar-container {
@@ -27,6 +28,7 @@ import { MenuBar, MiniTable, Extension, Views } from './components';
 	grid-column: 1 / -1;
 	margin: 10px 15px;
 	margin-top: 5px;
+	overflow: hidden;
 	background-color: #f5f5f5;
 }
 </style>

@@ -66,6 +66,13 @@ const dayOfDate = (year: number, month: number, date: number) => {
     return dateObj.getDay();
 }
 
+/**
+ * Judge if a given year, month, and date is today.
+ * @param {number} year 
+ * @param {number} month [0, 11]
+ * @param {number} date
+ * @returns {boolean}
+ */
 const isToday = (year: number | null, month: number | null, date: number | null): boolean => {
     if (!year ||!month ||!date) return false;
     const today = new Date();
@@ -74,10 +81,30 @@ const isToday = (year: number | null, month: number | null, date: number | null)
         today.getDate() === date;
 }
 
+const getMonthTable = (year: number, month: number): (number | null)[][] => {
+    const array: (number | null)[][] = [];
+    const daysInMonth = daysOfMonth(year, month) as number;
+    const firstDay = firstDayOfMonth(year, month) as number;
+    let cnt = 1;
+    for (let i = 0; i < 6; i++) {
+        const row: (number | null)[] = [];
+        for (let j = 0; j < 7; j++) {
+            if (i === 0 && j < firstDay) row.push(null);
+            else if (cnt <= daysInMonth) {
+                row.push(cnt);
+                cnt ++;
+            } else row.push(null);
+        }
+        array.push(row);
+    }
+    return array;
+}
+
 export {
     daysOfMonth,
     firstDayOfMonth,
     lastDayOfMonth,
     dayOfDate,
     isToday,
+    getMonthTable,
 }
