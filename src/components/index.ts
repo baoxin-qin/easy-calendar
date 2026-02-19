@@ -7,6 +7,7 @@ import MonthView from "./views/MonthView.vue";
 import WeekView from "./views/WeekView.vue";
 import DayView from "./views/DayView.vue";
 import AgendaForm from "./agendas/AgendaForm.vue";
+import AgendaCard from "./agendas/AgendaCard.vue";
 
 export {
     Extension,
@@ -18,4 +19,5 @@ export {
     WeekView,
     DayView,
     AgendaForm,
+    AgendaCard,
 }

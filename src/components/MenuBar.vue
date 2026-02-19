@@ -3,7 +3,7 @@ import { Icons } from '../assets/Icons';
 import { NButton, NIcon, NSwitch } from 'naive-ui';
 import { ref, useTemplateRef, watch } from 'vue';
 import { useGlobalStore } from '../stores/global';
-import { AgendaForm } from '.';
+import { AgendaForm, AgendaCard } from '.';
 
 const global = useGlobalStore();
 const inputValue = ref<string>('');
@@ -44,6 +44,7 @@ watch(inputValue, (value) => {
             <Icons.Search theme="outline" fill="#333" size="20" />
             <input type="text" placeholder="input event title to search ... ..." v-model="inputValue"/>
             <div ref="searchBoxRef" class="search-box">
+                <agenda-card />
                 <p>Nothing found ... ...</p>
             </div>
         </div>
