@@ -3,10 +3,15 @@ import { Icons } from '../assets/Icons';
 import { NButton, NIcon, NSwitch } from 'naive-ui';
 import { ref, useTemplateRef, watch } from 'vue';
 import { useGlobalStore } from '../stores/global';
+import { AgendaForm } from '.';
 
 const global = useGlobalStore();
 const inputValue = ref<string>('');
 const searchBoxRef = useTemplateRef<HTMLDivElement>('searchBoxRef');
+const agendaFormRef = useTemplateRef<HTMLDialogElement>('agendaFormRef');
+
+const showModal = () => agendaFormRef.value?.showModal();
+
 watch(inputValue, (value) => {
     const timer = setTimeout(() => {
         if (searchBoxRef.value) {
@@ -25,7 +30,7 @@ watch(inputValue, (value) => {
 
 <template>
     <div class="menu-bar">
-        <n-button type="primary" size="small" color="#333">
+        <n-button type="primary" size="small" color="#333" @click="showModal">
             <template #icon> <n-icon> <Icons.Add /> </n-icon> </template>
             New Event
         </n-button>
@@ -48,6 +53,7 @@ watch(inputValue, (value) => {
             <template #checked>Dark Mode</template>
             <template #checked-icon>🌙</template>
         </n-switch>
+        <agenda-form ref="agendaFormRef" />
     </div>
 </template>
 
