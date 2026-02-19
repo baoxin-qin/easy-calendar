@@ -15,7 +15,7 @@ const allMonthTables = computed(() => {
 
 <template>
     <div class="year-view">
-        <h1 class="title">Year: {{ global.todayObj.getFullYear() }}</h1>
+        <h1 class="title">Year: {{ global.thisYear }}</h1>
         <main class="main-area">
             <div class="month-table" v-for="(monthTable, n) in allMonthTables" :key="n">
                 <h2 class="month-name">{{ monthNames[n] }}</h2>

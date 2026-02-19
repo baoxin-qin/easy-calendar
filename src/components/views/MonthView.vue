@@ -5,7 +5,7 @@ import { getMonthTable } from '../../utils/date-utils';
 
 const global = useGlobalStore();
 const monthList = computed(() => { 
-    const arr = getMonthTable(global.todayObj.getFullYear(), global.todayObj.getMonth());
+    const arr = getMonthTable(global.thisYear, global.thisMonth);
     const list = [];
     for (let i = 0; i < arr.length; i++)
         for (let j = 0; j < arr[i]!.length; j++)
@@ -20,7 +20,7 @@ const monthNames = [
 
 <template>
     <div class="month-view">
-        <h1 class="title">Month: {{ monthNames[global.todayObj.getMonth()] }}</h1>
+        <h1 class="title">Month: {{ monthNames[global.thisMonth] }}</h1>
         <main class="main-area">
             <div class="cell" v-for="(date, idx) in monthList" :key="idx" :class="{valid: date !== null}">
                 <h2 class="cell-name">{{ date }}</h2>

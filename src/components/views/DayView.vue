@@ -6,7 +6,7 @@ const global = useGlobalStore();
 
 <template>
     <div class="day-view">
-        <h1 class="title">Today: {{ global.todayObj.getDate() }}</h1>
+        <h1 class="title">Today: {{ global.thisDate }}</h1>
         <ul class="main-area">
             <li class="time" v-for="t in 24" :key="t">
                 {{ (t-1).toString().padStart(2, '0') }} : 00
