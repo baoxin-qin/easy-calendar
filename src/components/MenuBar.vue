@@ -3,29 +3,45 @@ import { Icons } from '../assets/Icons';
 import { NButton, NIcon, NSwitch } from 'naive-ui';
 import { ref, useTemplateRef, watch } from 'vue';
 import { useGlobalStore } from '../stores/global';
+import { AgendaForm, AgendaCard } from '.';
+import type { Agenda } from '../type';
+import { getAgendaByTitle } from '../utils/db-utils';
 
 const global = useGlobalStore();
 const inputValue = ref<string>('');
+const agendaList = ref<Agenda[]>([]);
 const searchBoxRef = useTemplateRef<HTMLDivElement>('searchBoxRef');
-watch(inputValue, (value) => {
-    const timer = setTimeout(() => {
-        if (searchBoxRef.value) {
-            if (value.trim() === '') {
+const agendaFormRef = useTemplateRef<HTMLDialogElement>('agendaFormRef');
+
+const showModal = () => agendaFormRef.value?.showModal();
+
+let searchTimer: ReturnType<typeof setTimeout> | null = null;
+watch(inputValue, async (value) => {
+    if (searchTimer) {
+        clearTimeout(searchTimer);
+    }
+    
+    searchTimer = setTimeout(async () => {
+        if (value.trim() === '') {
+            agendaList.value = [];
+            if (searchBoxRef.value) {
                 searchBoxRef.value.style.visibility = 'hidden';
                 searchBoxRef.value.style.opacity = '0';
-            } else {
+            }
+        } else {
+            agendaList.value = await getAgendaByTitle(value);
+            if (searchBoxRef.value) {
                 searchBoxRef.value.style.visibility = 'visible';
                 searchBoxRef.value.style.opacity = '1';
             }
         }
-    }, 1000); // wait for 1 second before search box show/hide to avoid flicker
-    return () => clearTimeout(timer);
+    }, 500);
 })
 </script>
 
 <template>
     <div class="menu-bar">
-        <n-button type="primary" size="small" color="#333">
+        <n-button type="primary" size="small" color="#333" @click="showModal">
             <template #icon> <n-icon> <Icons.Add /> </n-icon> </template>
             New Event
         </n-button>
@@ -39,7 +55,8 @@ watch(inputValue, (value) => {
             <Icons.Search theme="outline" fill="#333" size="20" />
             <input type="text" placeholder="input event title to search ... ..." v-model="inputValue"/>
             <div ref="searchBoxRef" class="search-box">
-                <p>Nothing found ... ...</p>
+                <agenda-card v-for="(item, idx) in agendaList" :key="idx" :agenda="item" />
+                <p v-show="agendaList.length === 0 && inputValue.trim() !== ''">Nothing found ... ...</p>
             </div>
         </div>
         <n-switch size="medium">
@@ -48,6 +65,7 @@ watch(inputValue, (value) => {
             <template #checked>Dark Mode</template>
             <template #checked-icon>🌙</template>
         </n-switch>
+        <agenda-form ref="agendaFormRef" />
     </div>
 </template>
 
@@ -108,7 +126,9 @@ watch(inputValue, (value) => {
         transform: translateX(calc(-50% + 15px));
         @include flex-layout($direction: column);
         width: 500px;
-        min-height: 50px;
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 10px;
         background-color: #fff;
         border: 1px solid #ccc;
         border-radius: 5px;
@@ -116,6 +136,13 @@ watch(inputValue, (value) => {
         visibility: hidden;
         opacity: 0;
         transition: visibility 0.3s ease, opacity 0.3s ease;
+        z-index: 1000;
+        
+        p {
+            margin: 10px;
+            color: #999;
+            text-align: center;
+        }
     }
 }
 </style>
