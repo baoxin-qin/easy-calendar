@@ -5,7 +5,7 @@ import { dayOfDate } from '../../utils/date-utils';
 
 const global = useGlobalStore();
 const weekNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const today = computed(() => dayOfDate(global.todayObj.getFullYear(), global.todayObj.getMonth(), global.todayObj.getDate()));
+const today = computed(() => dayOfDate(global.thisYear, global.thisMonth, global.thisDate));
 </script>
 
 <template>

@@ -1,25 +1,42 @@
 <script setup lang="ts">
 import { useGlobalStore } from '../stores/global';
-import { isToday } from '../utils/date-utils';
+import { isToday, getMonthTable } from '../utils/date-utils';
 import { Icons } from '../assets/Icons';
+import { ref, computed } from 'vue';
 
 const global = useGlobalStore();
 const weeks = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const dateObj = ref<Date>(new Date());
+
+const thisYear = computed(() => dateObj.value.getFullYear());
+const thisMonth = computed(() => dateObj.value.getMonth());
+const monthArray = computed(() => {
+    return getMonthTable(thisYear.value, thisMonth.value);
+});
+
+const togglePrevMonth = () => {
+    const prevMonth = new Date(dateObj.value.getFullYear(), dateObj.value.getMonth() - 1, 1);
+    dateObj.value = prevMonth;
+};
+const toggleNextMonth = () => {
+    const nextMonth = new Date(dateObj.value.getFullYear(), dateObj.value.getMonth() + 1, 1);
+    dateObj.value = nextMonth;
+};
 </script>
 
 <template>
     <div class="mini-table">
         <div class="table-menu">
             <span class="title">
-                {{ global.thisYear }}-{{ global.thisMonth + 1 }}-{{ global.thisDate }}
+                {{ thisYear }} - {{ thisMonth + 1 }}
             </span>
-            <button class="btn" @click="global.setPrevMonth">
+            <button class="btn" @click="togglePrevMonth">
                 <Icons.ArrowUp theme="outline" size="20" fill="#333" />
             </button>
-            <button class="btn" @click="global.setNextMonth">
+            <button class="btn" @click="toggleNextMonth">
                 <Icons.ArrowDown theme="outline" size="20" fill="#333" />
             </button>
-            <button class="btn" @click="global.dateObj = global.todayObj">
+            <button class="btn" @click="dateObj = global.todayObj">
                 <Icons.Home theme="outline" size="20" fill="#333" />
             </button>
         </div>
@@ -27,12 +44,12 @@ const weeks = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             <span v-for="(week, idx) in weeks" :key="idx" class="week">{{ week }}</span>
         </div>
         <div class="table-body">
-            <div v-for="(row, rowIdx) in global.monthArray" :key="rowIdx" class="row">
+            <div v-for="(row, rowIdx) in monthArray" :key="rowIdx" class="row">
                 <span 
                     v-for="(day, dayIdx) in row" 
                     :key="dayIdx" 
                     class="day" 
-                    :class="{today: isToday(global.thisYear, global.thisMonth, day)}"
+                    :class="{today: isToday(thisYear, thisMonth, day)}"
                 >
                     {{ day === null ? '' : day }}
                 </span>
