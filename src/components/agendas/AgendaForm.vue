@@ -1,11 +1,48 @@
 <script setup lang="ts">
 import { NButton, NIcon } from 'naive-ui';
 import { Icons } from '../../assets/Icons';
-import { useTemplateRef } from 'vue';
+import { reactive, useTemplateRef } from 'vue';
+import type { Agenda } from '../../type';
+import { addAgenda, makeAgendaId } from '../../utils/db-utils';
 
 const agendaFormRef = useTemplateRef<HTMLDialogElement>('agendaFormRef');
 const showModal = () => agendaFormRef.value?.showModal();
 const closeModal = () => agendaFormRef.value?.close();
+
+const formState = reactive({
+    title: '',
+    location: '',
+    start: '',
+    end: '',
+    description: '',
+});
+
+const handleSubmit = async () => {
+    if (!formState.title || !formState.start) { 
+        window.alert('Title and start time are required');
+        return;
+    }
+    const newAgenda: Agenda = {
+        id: makeAgendaId(formState.start),
+        title: formState.title,
+        location: formState.location,
+        start: formState.start,
+        end: formState.end,
+        description: formState.description,
+    };
+    try {
+        await addAgenda(newAgenda);
+        formState.title = '';
+        formState.location = '';
+        formState.start = '';
+        formState.end = '';
+        formState.description = '';
+        closeModal();
+    } catch (error) {
+        console.error('Failed to add agenda:', error);
+        window.alert('Failed to add agenda. Please try again.');
+    }
+}
 
 defineExpose({showModal});
 </script>
@@ -19,7 +56,7 @@ defineExpose({showModal});
                     Cancel
                 </n-button>
                 <span class="form-title">New Agenda</span>
-                <n-button type="primary" size="medium" color="green" text>
+                <n-button type="primary" size="medium" color="green" text @click="handleSubmit">
                     <template #icon> <n-icon> <Icons.Save theme="outline" size="20" fill="green" /> </n-icon> </template>
                     Save
                 </n-button>
@@ -27,23 +64,23 @@ defineExpose({showModal});
             <div class="form-content">
                 <div class="form-item">
                     <Icons.Editor theme="outline" size="20" fill="#333" />
-                    <input type="text" placeholder="What is your agenda about?" required />
+                    <input type="text" placeholder="What is your agenda about?" v-model="formState.title" />
                 </div>
                 <div class="form-item">
                     <Icons.Local theme="outline" size="20" fill="#333" />
-                    <input type="text" placeholder="Where will your agenda be held?" />
+                    <input type="text" placeholder="Where will your agenda be held?" v-model="formState.location" />
                 </div>
                 <div class="form-item">
                     <Icons.AlarmClock theme="outline" size="20" fill="#333" />
-                    <input type="datetime-local" placeholder="When will your agenda start?" required />
+                    <input type="datetime-local" placeholder="When will your agenda start?" v-model="formState.start" />
                 </div>
                 <div class="form-item">
                     <Icons.Time theme="outline" size="20" fill="#333" />
-                    <input type="datetime-local" placeholder="When will your agenda end?" />
+                    <input type="datetime-local" placeholder="When will your agenda end?" v-model="formState.end" />
                 </div>
                 <div class="form-item">
                     <Icons.Comment theme="outline" size="20" fill="#333" />
-                    <input type="text" placeholder="You can add a description for your agenda." />
+                    <input type="text" placeholder="You can add a description for your agenda." v-model="formState.description" />
                 </div>
             </div>
         </div>
